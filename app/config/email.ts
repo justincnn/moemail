@@ -1,6 +1,6 @@
 export const EMAIL_CONFIG = {
   MAX_ACTIVE_EMAILS: 30, // Maximum number of active emails
-  POLL_INTERVAL: 10_000, // Polling interval in milliseconds
+  POLL_INTERVAL: 30_000, // 30s: free-plan Functions 只有 10ms CPU，10s 轮询会打成 1102
   DEFAULT_DAILY_SEND_LIMITS: {
     emperor: 0,   // 皇帝无限制
     duke: 5,      // 公爵每日5封

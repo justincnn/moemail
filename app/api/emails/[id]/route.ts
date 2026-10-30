@@ -120,6 +120,9 @@ export async function GET(
     
     const results = await db.query.messages.findMany({
       where: and(...conditions),
+      // 列表不需要 html 正文（点开单封时再按 messageId 取）：不排除就会把
+      // 20 封 × 数十 KB 的 html 从 D1 读进 Worker，免费版 10ms CPU 必超（1102）
+      columns: { html: false },
       orderBy: (messages, { desc }) => [
         desc(orderByTime),
         desc(messages.id)
@@ -145,7 +148,8 @@ export async function GET(
         to_address: msg?.toAddress,
         subject: msg.subject,
         content: msg.content,
-        html: msg.html,
+        // 列表不带 html：单封正文改由 /api/emails/[id]/[messageId] 取，
+        // 一页 20 封 × 平均 44KB html 会直接把免费版 10ms CPU 打爆（1102）
         sent_at: msg.sentAt?.getTime(),
         received_at: msg.receivedAt?.getTime()
       })),
